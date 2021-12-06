@@ -140,8 +140,13 @@ func (c *Client) createTaskImage(imgString string) (float64, error) {
 	// Decode response
 	responseBody := make(map[string]interface{})
 	json.NewDecoder(resp.Body).Decode(&responseBody)
-	// TODO treat api errors and handle them properly
-	return responseBody["taskId"].(float64), nil
+	
+	taskId, ok := responseBody["taskId"].(float64)
+	if !ok {
+		return 0, errors.New("create task request failed invalid taskId")
+	}
+	
+	return taskId, nil
 }
 
 // SendImage Method to encapsulate the processing of the image captcha
