@@ -8,6 +8,7 @@ import (
 	"net/url"
 	"time"
 	"log"
+	"io/ioutil"
 )
 
 var (
@@ -36,7 +37,7 @@ func (c *Client) createTaskRecaptcha(websiteURL string, recaptchaKey string) (fl
 		return 0, err
 	}
 
-	log.Printf("anticaptcha request body %s\n", b);
+	log.Printf("anticaptcha request body %s\n", string(b));
 
 	// Make the request
 	u := baseURL.ResolveReference(&url.URL{Path: "/createTask"})
@@ -45,8 +46,8 @@ func (c *Client) createTaskRecaptcha(websiteURL string, recaptchaKey string) (fl
 		return 0, err
 	}
 	defer resp.Body.Close()
-	
-	log.Printf("anticaptcha request body %s\n", resp);
+	respBody, err := ioutil.ReadAll(resp.Body)
+	log.Printf("anticaptcha request body %s - %v\n", string(respBody), err);
 
 	// Decode response
 	responseBody := make(map[string]interface{})
