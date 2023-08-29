@@ -24,7 +24,7 @@ func (c *Client) createTaskRecaptcha(websiteURL string, recaptchaKey string) (fl
 	body := map[string]interface{}{
 		"clientKey": c.APIKey,
 		"task": map[string]interface{}{
-			"type":       "NoCaptchaTaskProxyless",
+			"type":       "RecaptchaV2TaskProxyless",
 			"websiteURL": websiteURL,
 			"websiteKey": recaptchaKey,
 		},
@@ -35,6 +35,8 @@ func (c *Client) createTaskRecaptcha(websiteURL string, recaptchaKey string) (fl
 		return 0, err
 	}
 
+	log.Printf("anticaptcha request body %s\n", b);
+
 	// Make the request
 	u := baseURL.ResolveReference(&url.URL{Path: "/createTask"})
 	resp, err := http.Post(u.String(), "application/json", bytes.NewBuffer(b))
@@ -42,6 +44,8 @@ func (c *Client) createTaskRecaptcha(websiteURL string, recaptchaKey string) (fl
 		return 0, err
 	}
 	defer resp.Body.Close()
+	
+	log.Printf("anticaptcha request body %s\n", resp);
 
 	// Decode response
 	responseBody := make(map[string]interface{})
